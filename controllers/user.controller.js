@@ -21,6 +21,7 @@ export async function GetUserProfile(req, res) {
             status: HTTP_STATUS_OK,
             message: 'User profile retrieved successfully',
             data: {
+                userID: user.userID,
                 emailAddress: user.emailAddress,
                 name: user.name,
                 state: user.state,
