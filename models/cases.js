@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema({
-    userID: { type: String, required: true, unique: true },
+    userID: { type: String, required: true },
     subject: { type: String, required: true },
     description: { type: String, required: true },
     isViewed: { type: Boolean, default: false },
