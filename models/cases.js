@@ -8,6 +8,7 @@ const schema = new mongoose.Schema({
     isResolved: { type: Boolean, default: false },
     time: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
 
 const CaseSchema = mongoose.model('Case', schema);
