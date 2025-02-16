@@ -15,6 +15,7 @@ const schema = new mongoose.Schema({
     isAdmin: { type: Boolean, default: false },
     isSuspended: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
     lastLogin: { type: Date, default: null }
 });
 
