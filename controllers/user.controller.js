@@ -100,28 +100,19 @@ export async function UpdateUserProfile(req, res) {
 }
 
 export async function ReportCase(req, res) {
-    const { userID, subject, description, time } = req.body;
+    const { userID, subject, description } = req.body;
 
     try {
-        if (!userID || !subject || !description || !time) {
+        if (!userID || !subject || !description ) {
             return res.status(HTTP_STATUS_BAD_REQUEST).json({
                 success: false,
                 status: HTTP_STATUS_BAD_REQUEST,
                 message: "Error occurred",
-                error: 'All fields are required (userID, subject, description, time)'
+                error: 'All fields are required (userID, subject, description)'
             });
         }
 
         const parsedTime = new Date(time);
-        if (isNaN(parsedTime.getTime())) {
-            return res.status(HTTP_STATUS_BAD_REQUEST).json({
-                success: false,
-                status: HTTP_STATUS_BAD_REQUEST,
-                message: "Error occurred",
-                error: 'Invalid time format. Please provide a valid date/time.'
-            });
-        }
-
         const caseReport = new CaseSchema({
             userID,
             subject,
