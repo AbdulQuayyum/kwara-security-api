@@ -80,17 +80,32 @@ export async function ResolveCase(req, res) {
 
 export async function GetAllCases(req, res) {
     const { lga, ward, community, userName, sort } = req.query;
-
+    
     try {
         let query = {};
-        if (lga) query.lga = lga;
-        if (ward) query.ward = ward;
-        if (community) query.community = community;
+        if (lga) query['user.lga'] = lga;
+        if (ward) query['user.ward'] = ward;
+        if (community) query['user.community'] = community;
 
-        let cases = await CaseSchema.find(query).populate('userID', 'name');
+        let cases = await CaseSchema.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userID',
+                    foreignField: 'userID',
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: '$user'
+            },
+            {
+                $match: query
+            }
+        ]);
 
         if (userName) {
-            cases = cases.filter(caseItem => caseItem.userID.name.includes(userName));
+            cases = cases.filter(caseItem => caseItem.user.name.includes(userName));
         }
 
         if (sort === 'asc') {
@@ -109,7 +124,13 @@ export async function GetAllCases(req, res) {
                 subject: caseItem.subject,
                 description: caseItem.description,
                 time: caseItem.time,
-                isViewed: caseItem.isViewed
+                isViewed: caseItem.isViewed,
+                reporter: {
+                    name: caseItem.user.name,
+                    lga: caseItem.user.lga,
+                    ward: caseItem.user.ward,
+                    community: caseItem.user.community
+                }
             }))
         });
     } catch (error) {
@@ -140,7 +161,7 @@ export async function GetAllUsers(req, res) {
             status: HTTP_STATUS_OK,
             message: 'Users retrieved successfully',
             data: users.map(user => ({
-                userID: user._id,
+                userID: user.userID,
                 emailAddress: user.emailAddress,
                 name: user.name,
                 state: user.state,
