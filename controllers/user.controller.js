@@ -112,7 +112,7 @@ export async function ReportCase(req, res) {
             });
         }
 
-        const parsedTime = new Date(time);
+        const parsedTime = new Date();
         const caseReport = new CaseSchema({
             userID,
             subject,
