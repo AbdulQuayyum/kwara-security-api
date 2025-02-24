@@ -290,6 +290,7 @@ export async function GetUserStatistics(req, res) {
     try {
         const totalUsers = await UserSchema.countDocuments();
         const verifiedUsers = await UserSchema.countDocuments({ isVerified: true });
+        const unverifiedUsers = await UserSchema.countDocuments({ isVerified: false });
         const suspendedUsers = await UserSchema.countDocuments({ isSuspended: true });
 
         res.status(HTTP_STATUS_OK).json({
@@ -299,6 +300,7 @@ export async function GetUserStatistics(req, res) {
             data: {
                 totalUsers,
                 verifiedUsers,
+                unverifiedUsers,
                 suspendedUsers
             }
         });
@@ -354,6 +356,273 @@ export async function Search(req, res) {
             status: HTTP_STATUS_OK,
             message: 'Search results retrieved successfully',
             data: results
+        });
+    } catch (error) {
+        res.status(HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            status: HTTP_STATUS_BAD_REQUEST,
+            message: 'Error occurred',
+            error: error.message
+        });
+    }
+}
+
+export async function GetCasesByLocation(req, res) {
+    try {
+        const casesByLocation = await CaseSchema.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userID',
+                    foreignField: 'userID',
+                    as: 'userDetails'
+                }
+            },
+            {
+                $unwind: '$userDetails' 
+            },
+            {
+                $group: {
+                    _id: {
+                        lga: '$userDetails.lga',
+                        ward: '$userDetails.ward',
+                        community: '$userDetails.community'
+                    },
+                    totalCases: { $sum: 1 }, 
+                    resolvedCases: {
+                        $sum: {
+                            $cond: [{ $eq: ['$isResolved', true] }, 1, 0] 
+                        }
+                    },
+                    pendingCases: {
+                        $sum: {
+                            $cond: [{ $eq: ['$isResolved', false] }, 1, 0] 
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    lga: '$_id.lga',
+                    ward: '$_id.ward',
+                    community: '$_id.community',
+                    totalCases: 1,
+                    resolvedCases: 1,
+                    pendingCases: 1
+                }
+            },
+            {
+                $sort: { totalCases: -1 }
+            }
+        ]);
+
+        res.status(HTTP_STATUS_OK).json({
+            success: true,
+            status: HTTP_STATUS_OK,
+            message: 'Case statistics by location retrieved successfully',
+            data: casesByLocation
+        });
+    } catch (error) {
+        res.status(HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            status: HTTP_STATUS_BAD_REQUEST,
+            message: 'Error occurred',
+            error: error.message
+        });
+    }
+}
+
+export async function GetTopLGAs(req, res) {
+    try {
+        const topLGAs = await CaseSchema.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userID',
+                    foreignField: 'userID',
+                    as: 'userDetails'
+                }
+            },
+            {
+                $unwind: '$userDetails' 
+            },
+            {
+                $group: {
+                    _id: '$userDetails.lga', 
+                    totalCases: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    lga: '$_id',
+                    totalCases: 1
+                }
+            },
+            {
+                $sort: { totalCases: -1 } 
+            },
+            {
+                $limit: 10 
+            }
+        ]);
+
+        res.status(HTTP_STATUS_OK).json({
+            success: true,
+            status: HTTP_STATUS_OK,
+            message: 'Top LGAs with most cases retrieved successfully',
+            data: topLGAs
+        });
+    } catch (error) {
+        res.status(HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            status: HTTP_STATUS_BAD_REQUEST,
+            message: 'Error occurred',
+            error: error.message
+        });
+    }
+}
+
+export async function GetTopWards(req, res) {
+    try {
+        const topWards = await CaseSchema.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userID',
+                    foreignField: 'userID',
+                    as: 'userDetails'
+                }
+            },
+            {
+                $unwind: '$userDetails'
+            },
+            {
+                $group: {
+                    _id: '$userDetails.ward', 
+                    totalCases: { $sum: 1 } 
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    ward: '$_id',
+                    totalCases: 1
+                }
+            },
+            {
+                $sort: { totalCases: -1 } 
+            },
+            {
+                $limit: 10 
+            }
+        ]);
+
+        res.status(HTTP_STATUS_OK).json({
+            success: true,
+            status: HTTP_STATUS_OK,
+            message: 'Top Wards with most cases retrieved successfully',
+            data: topWards
+        });
+    } catch (error) {
+        res.status(HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            status: HTTP_STATUS_BAD_REQUEST,
+            message: 'Error occurred',
+            error: error.message
+        });
+    }
+}
+
+export async function GetTopCommunities(req, res) {
+    try {
+        const topCommunities = await CaseSchema.aggregate([
+            {
+                $lookup: {
+                    from: 'users', 
+                    localField: 'userID',
+                    foreignField: 'userID',
+                    as: 'userDetails'
+                }
+            },
+            {
+                $unwind: '$userDetails' 
+            },
+            {
+                $group: {
+                    _id: '$userDetails.community',
+                    totalCases: { $sum: 1 } 
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    community: '$_id',
+                    totalCases: 1
+                }
+            },
+            {
+                $sort: { totalCases: -1 } 
+            },
+            {
+                $limit: 10
+            }
+        ]);
+
+        res.status(HTTP_STATUS_OK).json({
+            success: true,
+            status: HTTP_STATUS_OK,
+            message: 'Top Communities with most cases retrieved successfully',
+            data: topCommunities
+        });
+    } catch (error) {
+        res.status(HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            status: HTTP_STATUS_BAD_REQUEST,
+            message: 'Error occurred',
+            error: error.message
+        });
+    }
+}
+
+export async function GetCasesByUser(req, res) {
+    try {
+        const casesByUser = await CaseSchema.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userID',
+                    foreignField: 'userID',
+                    as: 'userDetails'
+                }
+            },
+            {
+                $unwind: '$userDetails' 
+            },
+            {
+                $group: {
+                    _id: '$userDetails.name', 
+                    totalCases: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    userName: '$_id',
+                    totalCases: 1
+                }
+            },
+            {
+                $sort: { totalCases: -1 } 
+            }
+        ]);
+
+        res.status(HTTP_STATUS_OK).json({
+            success: true,
+            status: HTTP_STATUS_OK,
+            message: 'Case statistics by user retrieved successfully',
+            data: casesByUser
         });
     } catch (error) {
         res.status(HTTP_STATUS_BAD_REQUEST).json({
