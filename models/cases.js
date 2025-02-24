@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema({
-    userID: { type: String, required: true },
+    userID: { type: String, required: true, index: true },
     subject: { type: String, required: true },
     description: { type: String, required: true },
     isViewed: { type: Boolean, default: false },
@@ -9,7 +9,11 @@ const schema = new mongoose.Schema({
     time: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
+}, {
+    timestamps: true
 });
+
+schema.index({ userID: 1, time: -1 });
 
 const CaseSchema = mongoose.model('Case', schema);
 
