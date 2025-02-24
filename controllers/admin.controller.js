@@ -114,6 +114,8 @@ export async function GetAllCases(req, res) {
             cases.sort((a, b) => b.createdAt - a.createdAt);
         }
 
+        cases.reverse();
+
         res.status(HTTP_STATUS_OK).json({
             success: true,
             status: HTTP_STATUS_OK,
@@ -156,6 +158,8 @@ export async function GetAllUsers(req, res) {
         if (community) filter.community = community;
 
         const users = await UserSchema.find(filter);
+
+        users.reverse();
 
         res.status(HTTP_STATUS_OK).json({
             success: true,
