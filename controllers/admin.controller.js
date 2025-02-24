@@ -125,6 +125,7 @@ export async function GetAllCases(req, res) {
                 description: caseItem.description,
                 time: caseItem.time,
                 isViewed: caseItem.isViewed,
+                isResolved: caseItem.isResolved,
                 reporter: {
                     name: caseItem.user.name,
                     lga: caseItem.user.lga,
