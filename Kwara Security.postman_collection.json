@@ -25,12 +25,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8999/v1/auth/create-account",
-							"protocol": "http",
+							"raw": "https://kwara-security-api-production.up.railway.app/v1/auth/create-account",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"kwara-security-api-production",
+								"up",
+								"railway",
+								"app"
 							],
-							"port": "8999",
 							"path": [
 								"v1",
 								"auth",
@@ -55,12 +57,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8999/v1/auth/signin",
-							"protocol": "http",
+							"raw": "https://kwara-security-api-production.up.railway.app/v1/auth/signin",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"kwara-security-api-production",
+								"up",
+								"railway",
+								"app"
 							],
-							"port": "8999",
 							"path": [
 								"v1",
 								"auth",
@@ -125,14 +129,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8999/v1/auth/forgot-password",
-							"protocol": "http",
+							"raw": "https://kwara-security-api-production.up.railway.appv1/auth/forgot-password",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"kwara-security-api-production",
+								"up",
+								"railway",
+								"appv1"
 							],
-							"port": "8999",
 							"path": [
-								"v1",
 								"auth",
 								"forgot-password"
 							]
@@ -155,14 +160,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8999/v1/auth/reset-password",
-							"protocol": "http",
+							"raw": "https://kwara-security-api-production.up.railway.appv1/auth/reset-password",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"kwara-security-api-production",
+								"up",
+								"railway",
+								"appv1"
 							],
-							"port": "8999",
 							"path": [
-								"v1",
 								"auth",
 								"reset-password"
 							]
@@ -184,7 +190,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTczOTQ5ODM2NCwiZXhwIjoxNzM5NTg0NzY0fQ.8XMNPHLYd8u8ZNtyLUcxNn5OUqocyRP5TUyW_tNe6So",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTczOTY4NjE5OSwiZXhwIjoxNzM5NzcyNTk5fQ.2hx6GYP85ARMMQu_zX5AbnbctpidaPgysifrpWvXTzY",
 									"type": "string"
 								}
 							]
@@ -192,12 +198,14 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8999/v1/user/get-user-profile",
-							"protocol": "http",
+							"raw": "https://kwara-security-api-production.up.railway.app/v1/user/get-user-profile",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"kwara-security-api-production",
+								"up",
+								"railway",
+								"app"
 							],
-							"port": "8999",
 							"path": [
 								"v1",
 								"user",
@@ -232,12 +240,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8999/v1/user/update-user-profile",
-							"protocol": "http",
+							"raw": "https://kwara-security-api-production.up.railway.app/v1/user/update-user-profile",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"kwara-security-api-production",
+								"up",
+								"railway",
+								"app"
 							],
-							"port": "8999",
 							"path": [
 								"v1",
 								"user",
@@ -652,7 +662,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTczOTQ5ODM2NCwiZXhwIjoxNzM5NTg0NzY0fQ.8XMNPHLYd8u8ZNtyLUcxNn5OUqocyRP5TUyW_tNe6So",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTc0MDM3NTE2NiwiZXhwIjoxNzQwNDYxNTY2fQ.zBTj-BDal50hl0kSJfyB00vbej2mJ0grITkaErdB7Eg",
 									"type": "string"
 								}
 							]
@@ -725,6 +735,171 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Cases By Location Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTc0MDM3NTE2NiwiZXhwIjoxNzQwNDYxNTY2fQ.zBTj-BDal50hl0kSJfyB00vbej2mJ0grITkaErdB7Eg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8999/v1/admin/analytics/locations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8999",
+							"path": [
+								"v1",
+								"admin",
+								"analytics",
+								"locations"
+							]
+						},
+						"description": "Cases By Location Analytics"
+					},
+					"response": []
+				},
+				{
+					"name": "Cases By LGAS Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTc0MDM3NTE2NiwiZXhwIjoxNzQwNDYxNTY2fQ.zBTj-BDal50hl0kSJfyB00vbej2mJ0grITkaErdB7Eg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8999/v1/admin/analytics/lgas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8999",
+							"path": [
+								"v1",
+								"admin",
+								"analytics",
+								"lgas"
+							]
+						},
+						"description": "Cases By LGAS Analytics"
+					},
+					"response": []
+				},
+				{
+					"name": "Cases By Wards Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTc0MDM3NTE2NiwiZXhwIjoxNzQwNDYxNTY2fQ.zBTj-BDal50hl0kSJfyB00vbej2mJ0grITkaErdB7Eg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8999/v1/admin/analytics/wards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8999",
+							"path": [
+								"v1",
+								"admin",
+								"analytics",
+								"wards"
+							]
+						},
+						"description": "Cases By Wards Analytics"
+					},
+					"response": []
+				},
+				{
+					"name": "Cases By Communities Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTc0MDM3NTE2NiwiZXhwIjoxNzQwNDYxNTY2fQ.zBTj-BDal50hl0kSJfyB00vbej2mJ0grITkaErdB7Eg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8999/v1/admin/analytics/communities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8999",
+							"path": [
+								"v1",
+								"admin",
+								"analytics",
+								"communities"
+							]
+						},
+						"description": "Cases By Communities Analytics"
+					},
+					"response": []
+				},
+				{
+					"name": "Cases By Users' Reporting Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVhMzBiZDMzNzFiNjQ4YmIwNmM4MSIsImVtYWlsQWRkcmVzcyI6ImFsYW9hYmR1bHF1YXl5dW1tQGdtYWlsLmNvbSIsImlhdCI6MTc0MDM3NTE2NiwiZXhwIjoxNzQwNDYxNTY2fQ.zBTj-BDal50hl0kSJfyB00vbej2mJ0grITkaErdB7Eg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8999/v1/admin/analytics/usercases",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8999",
+							"path": [
+								"v1",
+								"admin",
+								"analytics",
+								"usercases"
+							]
+						},
+						"description": "Cases By Users' Reporting Analytics"
+					},
+					"response": []
 				}
 			],
 			"description": "Admin related endpoints"
@@ -738,12 +913,14 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8999/v1/misc/states",
-							"protocol": "http",
+							"raw": "https://kwara-security-api-production.up.railway.app/v1/misc/states",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"kwara-security-api-production",
+								"up",
+								"railway",
+								"app"
 							],
-							"port": "8999",
 							"path": [
 								"v1",
 								"misc",
@@ -759,12 +936,14 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8999/v1/misc/lgas-and-wards",
-							"protocol": "http",
+							"raw": "https://kwara-security-api-production.up.railway.app/v1/misc/lgas-and-wards",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"kwara-security-api-production",
+								"up",
+								"railway",
+								"app"
 							],
-							"port": "8999",
 							"path": [
 								"v1",
 								"misc",
