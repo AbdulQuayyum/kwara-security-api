@@ -428,18 +428,55 @@ export async function GetCasesByLocation(req, res) {
                 }
             },
             {
-                $project: {
-                    _id: 0,
-                    lga: '$_id.lga',
-                    ward: '$_id.ward',
-                    community: '$_id.community',
-                    totalCases: 1,
-                    resolvedCases: 1,
-                    pendingCases: 1
+                $group: {
+                    _id: {
+                        lga: '$_id.lga',
+                        ward: '$_id.ward'
+                    },
+                    communities: {
+                        $push: {
+                            community: '$_id.community',
+                            totalCases: '$totalCases',
+                            resolvedCases: '$resolvedCases',
+                            pendingCases: '$pendingCases'
+                        }
+                    },
+                    totalCasesInWard: { $sum: '$totalCases' },
+                    resolvedCasesInWard: { $sum: '$resolvedCases' },
+                    pendingCasesInWard: { $sum: '$pendingCases' }
                 }
             },
             {
-                $sort: { totalCases: -1 }
+                $group: {
+                    _id: {
+                        lga: '$_id.lga'
+                    },
+                    wards: {
+                        $push: {
+                            ward: '$_id.ward',
+                            communities: '$communities',
+                            totalCasesInWard: '$totalCasesInWard',
+                            resolvedCasesInWard: '$resolvedCasesInWard',
+                            pendingCasesInWard: '$pendingCasesInWard'
+                        }
+                    },
+                    totalCasesInLGA: { $sum: '$totalCasesInWard' },
+                    resolvedCasesInLGA: { $sum: '$resolvedCasesInWard' },
+                    pendingCasesInLGA: { $sum: '$pendingCasesInWard' }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    lga: '$_id.lga',
+                    wards: 1,
+                    totalCasesInLGA: 1,
+                    resolvedCasesInLGA: 1,
+                    pendingCasesInLGA: 1
+                }
+            },
+            {
+                $sort: { totalCasesInLGA: -1 }
             }
         ]);
 
