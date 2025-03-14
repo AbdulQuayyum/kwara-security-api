@@ -52,7 +52,7 @@ export async function LoginAccount(req, res) {
         user.lastLogin = new Date();
         await user.save();
 
-        const token = jwt.sign({ id: user._id, emailAddress: user.emailAddress }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, emailAddress: user.emailAddress }, process.env.JWT_SECRET, { expiresIn: '180d' });
         res.status(HTTP_STATUS_OK).json({
             success: true,
             status: HTTP_STATUS_OK,
