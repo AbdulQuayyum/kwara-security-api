@@ -220,24 +220,24 @@ export async function VerifyUser(req, res) {
         await user.save();
 
         let notificationMessage = '';
-        if (user.phoneNumber) {
-            try {
-                await TwilioClient.messages.create({
-                    body: `Hello ${user.name}, your account has been verified by an admin. You can now log in.`,
-                    from: TWILIO_PHONE_NUMBER,
-                    to: user.phoneNumber,
-                });
-                notificationMessage = ' SMS notification sent.';
-            } catch (smsError) {
-                console.error('SMS notification failed:', smsError);
-                notificationMessage = ' (SMS notification failed, but verification was successful)';
-            }
-        }
+        // if (user.phoneNumber) {
+        //     try {
+        //         await TwilioClient.messages.create({
+        //             body: `Hello ${user.name}, your account has been verified by an admin. You can now log in.`,
+        //             from: TWILIO_PHONE_NUMBER,
+        //             to: user.phoneNumber,
+        //         });
+        //         notificationMessage = ' SMS notification sent.';
+        //     } catch (smsError) {
+        //         console.error('SMS notification failed:', smsError);
+        //         notificationMessage = ' (SMS notification failed, but verification was successful)';
+        //     }
+        // }
 
         res.status(HTTP_STATUS_OK).json({
             success: true,
             status: HTTP_STATUS_OK,
-            message: `User verified successfully.${notificationMessage}`,
+            message: `Account created successfully! Please wait for admin verification.`,
         });
 
     } catch (error) {
