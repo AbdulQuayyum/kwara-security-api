@@ -80,7 +80,7 @@ export async function ResolveCase(req, res) {
 
 export async function GetAllCases(req, res) {
     const { lga, ward, community, userName, sort } = req.query;
-    
+
     try {
         let query = {};
         if (lga) query['user.lga'] = lga;
@@ -209,9 +209,9 @@ export async function VerifyUser(req, res) {
         }
 
         if (user.isVerified) {
-            return res.status(HTTP_STATUS_BAD_REQUEST).json({
-                success: false,
-                status: HTTP_STATUS_BAD_REQUEST,
+            return res.status(HTTP_STATUS_OK).json({
+                success: true,
+                status: HTTP_STATUS_OK,
                 message: "User is already verified",
             });
         }
@@ -219,24 +219,33 @@ export async function VerifyUser(req, res) {
         user.isVerified = true;
         await user.save();
 
+        let notificationMessage = '';
         if (user.phoneNumber) {
-            await TwilioClient.messages.create({
-                body: `Hello ${user.name}, your account has been verified by an admin. You can now log in.`,
-                from: TWILIO_PHONE_NUMBER,
-                to: user.phoneNumber,
-            });
+            try {
+                await TwilioClient.messages.create({
+                    body: `Hello ${user.name}, your account has been verified by an admin. You can now log in.`,
+                    from: TWILIO_PHONE_NUMBER,
+                    to: user.phoneNumber,
+                });
+                notificationMessage = ' SMS notification sent.';
+            } catch (smsError) {
+                console.error('SMS notification failed:', smsError);
+                notificationMessage = ' (SMS notification failed, but verification was successful)';
+            }
         }
 
         res.status(HTTP_STATUS_OK).json({
             success: true,
             status: HTTP_STATUS_OK,
-            message: 'User verified successfully. SMS notification sent.',
+            message: `User verified successfully.${notificationMessage}`,
         });
+
     } catch (error) {
-        res.status(HTTP_STATUS_BAD_REQUEST).json({
+        console.error('User verification error:', error);
+        res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
             success: false,
-            status: HTTP_STATUS_BAD_REQUEST,
-            message: 'Error occurred',
+            status: HTTP_STATUS_INTERNAL_SERVER_ERROR,
+            message: 'Error occurred during user verification',
             error: error.message,
         });
     }
@@ -405,7 +414,7 @@ export async function GetCasesByLocation(req, res) {
                 }
             },
             {
-                $unwind: '$userDetails' 
+                $unwind: '$userDetails'
             },
             {
                 $group: {
@@ -414,15 +423,15 @@ export async function GetCasesByLocation(req, res) {
                         ward: '$userDetails.ward',
                         community: '$userDetails.community'
                     },
-                    totalCases: { $sum: 1 }, 
+                    totalCases: { $sum: 1 },
                     resolvedCases: {
                         $sum: {
-                            $cond: [{ $eq: ['$isResolved', true] }, 1, 0] 
+                            $cond: [{ $eq: ['$isResolved', true] }, 1, 0]
                         }
                     },
                     pendingCases: {
                         $sum: {
-                            $cond: [{ $eq: ['$isResolved', false] }, 1, 0] 
+                            $cond: [{ $eq: ['$isResolved', false] }, 1, 0]
                         }
                     }
                 }
@@ -508,11 +517,11 @@ export async function GetTopLGAs(req, res) {
                 }
             },
             {
-                $unwind: '$userDetails' 
+                $unwind: '$userDetails'
             },
             {
                 $group: {
-                    _id: '$userDetails.lga', 
+                    _id: '$userDetails.lga',
                     totalCases: { $sum: 1 }
                 }
             },
@@ -524,10 +533,10 @@ export async function GetTopLGAs(req, res) {
                 }
             },
             {
-                $sort: { totalCases: -1 } 
+                $sort: { totalCases: -1 }
             },
             {
-                $limit: 10 
+                $limit: 10
             }
         ]);
 
@@ -563,8 +572,8 @@ export async function GetTopWards(req, res) {
             },
             {
                 $group: {
-                    _id: '$userDetails.ward', 
-                    totalCases: { $sum: 1 } 
+                    _id: '$userDetails.ward',
+                    totalCases: { $sum: 1 }
                 }
             },
             {
@@ -575,10 +584,10 @@ export async function GetTopWards(req, res) {
                 }
             },
             {
-                $sort: { totalCases: -1 } 
+                $sort: { totalCases: -1 }
             },
             {
-                $limit: 10 
+                $limit: 10
             }
         ]);
 
@@ -603,19 +612,19 @@ export async function GetTopCommunities(req, res) {
         const topCommunities = await CaseSchema.aggregate([
             {
                 $lookup: {
-                    from: 'users', 
+                    from: 'users',
                     localField: 'userID',
                     foreignField: 'userID',
                     as: 'userDetails'
                 }
             },
             {
-                $unwind: '$userDetails' 
+                $unwind: '$userDetails'
             },
             {
                 $group: {
                     _id: '$userDetails.community',
-                    totalCases: { $sum: 1 } 
+                    totalCases: { $sum: 1 }
                 }
             },
             {
@@ -626,7 +635,7 @@ export async function GetTopCommunities(req, res) {
                 }
             },
             {
-                $sort: { totalCases: -1 } 
+                $sort: { totalCases: -1 }
             },
             {
                 $limit: 10
@@ -661,11 +670,11 @@ export async function GetCasesByUser(req, res) {
                 }
             },
             {
-                $unwind: '$userDetails' 
+                $unwind: '$userDetails'
             },
             {
                 $group: {
-                    _id: '$userDetails.name', 
+                    _id: '$userDetails.name',
                     totalCases: { $sum: 1 }
                 }
             },
@@ -677,7 +686,7 @@ export async function GetCasesByUser(req, res) {
                 }
             },
             {
-                $sort: { totalCases: -1 } 
+                $sort: { totalCases: -1 }
             }
         ]);
 
