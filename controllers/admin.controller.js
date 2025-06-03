@@ -288,6 +288,81 @@ export async function SuspendUser(req, res) {
     }
 }
 
+export async function MakeUserAdmin(req, res) {
+    const { userID } = req.params;
+    const { isAdmin } = req.body;
+
+    try {
+        const user = await UserSchema.findOne({
+            userID: { $regex: userID, $options: 'i' }
+        });
+
+        if (!user) {
+            return res.status(HTTP_STATUS_NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS_NOT_FOUND,
+                message: "User not found",
+            });
+        }
+
+        if (isAdmin && user.isAdmin) {
+            return res.status(HTTP_STATUS_OK).json({
+                success: true,
+                status: HTTP_STATUS_OK,
+                message: "User is already an admin",
+            });
+        }
+
+        if (!isAdmin && !user.isAdmin) {
+            return res.status(HTTP_STATUS_OK).json({
+                success: true,
+                status: HTTP_STATUS_OK,
+                message: "User is already not an admin",
+            });
+        }
+
+        user.isAdmin = isAdmin;
+        user.updatedAt = Date.now();
+        await user.save();
+
+        // Optional: Send notification (uncomment if needed)
+        // let notificationMessage = '';
+        // if (user.phoneNumber) {
+        //     try {
+        //         await TwilioClient.messages.create({
+        //             body: `Hello ${user.name}, your account has been ${isAdmin ? 'granted' : 'revoked'} admin privileges.`,
+        //             from: TWILIO_PHONE_NUMBER,
+        //             to: user.phoneNumber,
+        //         });
+        //         notificationMessage = ' SMS notification sent.';
+        //     } catch (smsError) {
+        //         console.error('SMS notification failed:', smsError);
+        //         notificationMessage = ' (SMS notification failed, but admin status update was successful)';
+        //     }
+        // }
+
+        res.status(HTTP_STATUS_OK).json({
+            success: true,
+            status: HTTP_STATUS_OK,
+            message: `User ${isAdmin ? 'granted' : 'revoked'} admin privileges successfully`,
+            data: {
+                emailAddress: user.emailAddress,
+                isAdmin: user.isAdmin,
+                updatedAt: user.updatedAt
+            }
+        });
+
+    } catch (error) {
+        console.error('Make admin error:', error);
+        res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS_INTERNAL_SERVER_ERROR,
+            message: 'Error occurred during admin status update',
+            error: error.message,
+        });
+    }
+}
+
 export async function GetCaseStatistics(req, res) {
     const { lga, ward, community } = req.query;
 
@@ -695,6 +770,96 @@ export async function GetCasesByUser(req, res) {
             status: HTTP_STATUS_OK,
             message: 'Case statistics by user retrieved successfully',
             data: casesByUser
+        });
+    } catch (error) {
+        res.status(HTTP_STATUS_BAD_REQUEST).json({
+            success: false,
+            status: HTTP_STATUS_BAD_REQUEST,
+            message: 'Error occurred',
+            error: error.message
+        });
+    }
+}
+
+export async function GetMonthlyStatistics(req, res) {
+    try {
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+        const monthlyStats = await CaseSchema.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: sixMonthsAgo }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: '$createdAt' },
+                        month: { $month: '$createdAt' }
+                    },
+                    totalCases: { $sum: 1 },
+                    resolvedCases: {
+                        $sum: {
+                            $cond: [{ $eq: ['$isResolved', true] }, 1, 0]
+                        }
+                    },
+                    pendingCases: {
+                        $sum: {
+                            $cond: [{ $eq: ['$isResolved', false] }, 1, 0]
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    month: {
+                        $dateToString: {
+                            format: "%Y-%m",
+                            date: {
+                                $dateFromParts: {
+                                    year: '$_id.year',
+                                    month: '$_id.month',
+                                    day: 1
+                                }
+                            }
+                        }
+                    },
+                    totalCases: 1,
+                    resolvedCases: 1,
+                    pendingCases: 1
+                }
+            },
+            {
+                $sort: { month: 1 }
+            }
+        ]);
+
+        const totalCases = monthlyStats.map(stat => ({
+            month: stat.month,
+            count: stat.totalCases
+        }));
+
+        const resolvedCases = monthlyStats.map(stat => ({
+            month: stat.month,
+            count: stat.resolvedCases
+        }));
+
+        const pendingCases = monthlyStats.map(stat => ({
+            month: stat.month,
+            count: stat.pendingCases
+        }));
+
+        res.status(HTTP_STATUS_OK).json({
+            success: true,
+            status: HTTP_STATUS_OK,
+            message: 'Monthly statistics retrieved successfully',
+            data: {
+                totalCases,
+                resolvedCases,
+                pendingCases
+            }
         });
     } catch (error) {
         res.status(HTTP_STATUS_BAD_REQUEST).json({
